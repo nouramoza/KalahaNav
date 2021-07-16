@@ -55,12 +55,9 @@ public class KalahaApplicationTests {
         GameInit gameInit = new GameInit(6,6);
         Player player1 = new Player("Player1", true);
 
-
-
-
-        playerMap.put(player1, generatePlayerArea(player1, gameInit));
-        Player player2 = new Player("Player2", false);
-        playerMap.put(player2, generatePlayerArea(player2, gameInit));
+//        playerMap.put(player1, generatePlayerArea(player1, gameInit));
+//        Player player2 = new Player("Player2", false);
+//        playerMap.put(player2, generatePlayerArea(player2, gameInit));
 //        Board board = new Board(playerMap);
 //        signUpUserRequest.setEmail("my@email.com");
 
@@ -102,16 +99,6 @@ public class KalahaApplicationTests {
 //            .andDo(document("sso-signup"));
     }
 
-    private PlayerArea generatePlayerArea(Player player, GameInit gameInit) {
-        Pit[] pits = new Pit[gameInit.getPitPerPlayer()];
-        for (int i = 0; i < gameInit.getPitPerPlayer(); i++) {
-            Pit pit = new Pit(gameInit.getPitPerPlayer());
-            pits[i] = pit;
-        }
-        Pit bowl = new Pit(0);
-        PlayerArea playerArea = new PlayerArea(pits, bowl);
-        return playerArea;
-    }
 
 }
 

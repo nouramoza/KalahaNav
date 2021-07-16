@@ -27,8 +27,8 @@ public class KalahaServiceImpl implements KalahaService {
 
     private PlayerArea generatePlayerArea(GameInit gameInit) {
         Pit[] pits = new Pit[gameInit.getPitPerPlayer()];
+        Pit pit = new Pit(gameInit.getPitPerPlayer());
         for (int i = 0; i < gameInit.getPitPerPlayer(); i++) {
-            Pit pit = new Pit(gameInit.getPitPerPlayer());
             pits[i] = pit;
         }
         Pit bowl = new Pit(0);
@@ -42,7 +42,7 @@ public class KalahaServiceImpl implements KalahaService {
         int mainTurn = 0;
 //        Player player = board.getPlayerMap().get(Long.valueOf(turn));
         for (int i = 1; i < 3; i++) {
-            if (board.getPlayerMap().get(Long.valueOf(i)).getTurn()) {
+            if (board.getPlayerMap().get(Long.valueOf(i)).getIsTurn()) {
                 mainTurn = i;
                 break;
             }
@@ -83,7 +83,8 @@ public class KalahaServiceImpl implements KalahaService {
         //find number of stones of the selected pit
         int selectedPitTotalStones = board.getPlayerAreaMap().get(Long.valueOf(mainTurn)).getPits()[selectedPitNo - 1].getNumOfStones();
 
-        board.getPlayerAreaMap().get(Long.valueOf(playerAreaNo)).getPits()[selectedPitNo -1].setNumOfStones(0);
+        //empty the selected pit
+        board.getPlayerAreaMap().get(Long.valueOf(mainTurn)).getPits()[selectedPitNo -1].setNumOfStones(0);
 
         //find start point of the game set
         int startPoint = selectedPitNo;
@@ -99,7 +100,6 @@ public class KalahaServiceImpl implements KalahaService {
             playerAreaNo = findOtherPlayerTurn(playerAreaNo);
         }
 
-        //empty the selected pit
         while (selectedPitTotalStones > 0) {
             int total = Math.min(board.getGameInit().getPitPerPlayer(), startPoint + selectedPitTotalStones);
             for (int i = startPoint; i < total; i++) {
@@ -132,13 +132,9 @@ public class KalahaServiceImpl implements KalahaService {
     }
 
     private void updateTurn(Board board, int turn) {
-        board.getPlayerMap().get(Long.valueOf(turn)).setTurn(false);
-        board.getPlayerMap().get(Long.valueOf(findOtherPlayerTurn(turn))).setTurn(true);
+        board.getPlayerMap().get(Long.valueOf(turn)).setIsTurn(false);
+        board.getPlayerMap().get(Long.valueOf(findOtherPlayerTurn(turn))).setIsTurn(true);
     }
-
-//    private void checkIsCapture() {
-//
-//    }
 
     private void doCapture(Board board, int mainCapturedPitNo, int mainTurn) {
         if (mainCapturedPitNo > 0) {
@@ -161,10 +157,6 @@ public class KalahaServiceImpl implements KalahaService {
 
         }
     }
-
-//    private void checkLandsInBigPit() {
-//
-//    }
 
     private Boolean checkAllPitsEmpty(Board board, int mainTurn) {
         Boolean gameOver = true;
@@ -191,10 +183,6 @@ public class KalahaServiceImpl implements KalahaService {
         );
         board.setWinner(mainTurn);
         return "Game Over: Player" + mainTurn + "Wins";
-    }
-
-    private void checkGameIsOver() {
-
     }
 
     private int findOtherPlayerTurn(int turn) {

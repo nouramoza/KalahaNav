@@ -11,8 +11,7 @@ import java.util.Set;
 //@NoArgsConstructor
 //@Getter
 //@Setter
-public class Player implements Serializable {
-//    public static int turn;
+public class Player {
     private String name;
     private Boolean isTurn;
 
@@ -32,11 +31,11 @@ public class Player implements Serializable {
         this.name = name;
     }
 
-    public Boolean getTurn() {
+    public Boolean getIsTurn() {
         return isTurn;
     }
 
-    public void setTurn(Boolean turn) {
-        isTurn = turn;
+    public void setIsTurn(Boolean isTurn) {
+        this.isTurn = isTurn;
     }
 }
