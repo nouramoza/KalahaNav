@@ -36,10 +36,6 @@ public class KalahaController {
         return kalahaService.start(gameInit);
     }
 
-
-
-    @ResponseBody
-
     @PostMapping("/move/{pitNo}")
     @ApiOperation(value = "Move from a pIT",
             produces = "Application/JSON", response = Board.class, httpMethod = "POST")

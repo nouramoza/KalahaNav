@@ -2,6 +2,10 @@ package com.game.kalaha;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.game.kalaha.web.dto.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommonMethods {
 
@@ -35,5 +39,56 @@ public class CommonMethods {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(obj);
     }
+
+    protected static String makeInputBoard(GameInit gameInit,
+                                           Pit[] player1Pits,
+                                           int player1Bowl,
+                                           Pit[] player2Pits,
+                                           int player2Bowl,
+                                           int turn
+    ) throws JsonProcessingException {
+        Board board = new Board();
+        board.setGameInit(gameInit);
+
+        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, turn == 1);
+        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, turn == 2);
+        Map<Long, Player> playerMap = new HashMap<>();
+        playerMap.put(1L, player1);
+        playerMap.put(2L, player2);
+        board.setPlayerMap(playerMap);
+
+        Map<Long, PlayerArea> playerAreaMap = new HashMap<>();
+        playerAreaMap.put(1L, new PlayerArea(player1Pits, new Pit(player1Bowl)));
+
+        playerAreaMap.put(2L, new PlayerArea(player2Pits, new Pit(player2Bowl)));
+        board.setPlayerAreaMap(playerAreaMap);
+        return CommonMethods.mapToJson(board);
+    }
+
+    protected static Board makeBoard(GameInit gameInit,
+                                     Pit[] player1Pits,
+                                     int player1Bowl,
+                                     Pit[] player2Pits,
+                                     int player2Bowl,
+                                     int turn
+    ) throws JsonProcessingException {
+        Board board = new Board();
+        board.setGameInit(gameInit);
+
+        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, turn == 1);
+        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, turn == 2);
+        Map<Long, Player> playerMap = new HashMap<>();
+        playerMap.put(1L, player1);
+        playerMap.put(2L, player2);
+        board.setPlayerMap(playerMap);
+
+        Map<Long, PlayerArea> playerAreaMap = new HashMap<>();
+        playerAreaMap.put(1L, new PlayerArea(player1Pits, new Pit(player1Bowl)));
+
+        playerAreaMap.put(2L, new PlayerArea(player2Pits, new Pit(player2Bowl)));
+        board.setPlayerAreaMap(playerAreaMap);
+        return board;
+    }
+
 
 }

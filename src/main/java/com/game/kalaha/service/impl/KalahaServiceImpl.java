@@ -1,7 +1,6 @@
 package com.game.kalaha.service.impl;
 
 import com.game.kalaha.service.KalahaService;
-import com.game.kalaha.util.ConstantsUtil;
 import com.game.kalaha.web.dto.*;
 import com.game.kalaha.web.error.BadRequestAlertException;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ public class KalahaServiceImpl implements KalahaService {
 
     @Override
     public Board start(GameInit gameInit) {
+
         Map<Long, Player> playerMap = new HashMap<>();
         Player player1 = new Player("Player1", true);
         playerMap.put(1L, player1);
@@ -21,13 +21,13 @@ public class KalahaServiceImpl implements KalahaService {
         Map<Long, PlayerArea> playerAreaMap = new HashMap<>();
         playerAreaMap.put(1L, generatePlayerArea(gameInit));
         playerAreaMap.put(2L, generatePlayerArea(gameInit));
-        Board board = new Board(playerMap, playerAreaMap, gameInit);
+        Board board = new Board(gameInit, playerMap, playerAreaMap, 0);
         return board;
     }
 
     private PlayerArea generatePlayerArea(GameInit gameInit) {
         Pit[] pits = new Pit[gameInit.getPitPerPlayer()];
-        Pit pit = new Pit(gameInit.getPitPerPlayer());
+        Pit pit = new Pit(gameInit.getStonePerPit());
         for (int i = 0; i < gameInit.getPitPerPlayer(); i++) {
             pits[i] = pit;
         }
@@ -107,7 +107,8 @@ public class KalahaServiceImpl implements KalahaService {
                         board.getPlayerAreaMap().get(Long.valueOf(playerAreaNo)).getPits()[i].getNumOfStones() + 1);
                 selectedPitTotalStones--;
                 if (selectedPitTotalStones == 0) {
-                    if (mainTurn == playerAreaNo) {
+                    if (mainTurn == playerAreaNo &&
+                            board.getPlayerAreaMap().get(Long.valueOf(playerAreaNo)).getPits()[i].getNumOfStones() == 1) {
                         capturedPit = i;
                     }
                     break;
@@ -115,7 +116,7 @@ public class KalahaServiceImpl implements KalahaService {
             }
 
             //check Lands in main player bowl
-            if (mainTurn == playerAreaNo && capturedPit < 0) {
+            if (selectedPitTotalStones > 0 && mainTurn == playerAreaNo && capturedPit < 0) {
                 board.getPlayerAreaMap().get(Long.valueOf(playerAreaNo)).getBowl().setNumOfStones(
                         board.getPlayerAreaMap().get(Long.valueOf(playerAreaNo)).getBowl().getNumOfStones() + 1);
                 selectedPitTotalStones--;

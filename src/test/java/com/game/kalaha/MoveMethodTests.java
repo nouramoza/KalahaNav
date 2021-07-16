@@ -33,7 +33,6 @@ public class MoveMethodTests {
 
     private static final String MOVE_URI = "/api/v1/kalaha/move/{pitNo}";
 
-
     @Autowired
     MockMvc mockMvc;
 
@@ -75,7 +74,7 @@ public class MoveMethodTests {
                 new Pit(TestOne.PLAYER2_PIT_4),
                 new Pit(TestOne.PLAYER2_PIT_5)};
 
-        String inputMockBoard = makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
                 pits1, TestOne.PLAYER1_BOWL,
                 pits2, TestOne.PLAYER2_BOWL,
                 1);
@@ -93,7 +92,7 @@ public class MoveMethodTests {
                 new Pit(TestOne.PLAYER2_PIT_4),
                 new Pit(TestOne.PLAYER2_PIT_5)};
 
-        String outputExpectedMockBoard = makeInputBoard(gameInit,
+        String outputExpectedMockBoard = CommonMethods.makeInputBoard(gameInit,
                 outPits1, CommonMethods.Numbers.ONE,
                 outPits2, TestOne.PLAYER2_BOWL, 1);
 
@@ -130,7 +129,7 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.SIX),
                 new Pit(CommonMethods.Numbers.SIX)};
 
-        String inputMockBoard = makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
                 pits1, CommonMethods.Numbers.ONE,
                 pits2, CommonMethods.Numbers.ZERO,
                 1);
@@ -148,7 +147,7 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.SIX),
                 new Pit(CommonMethods.Numbers.SIX)};
 
-        String outputExpectedMockBoard = makeInputBoard(gameInit,
+        String outputExpectedMockBoard = CommonMethods.makeInputBoard(gameInit,
                 outPits1, CommonMethods.Numbers.TWO,
                 outPits2, CommonMethods.Numbers.ZERO, 2);
 
@@ -161,63 +160,6 @@ public class MoveMethodTests {
         MvcResult mvcResult = this.mockMvc.perform(req)
                 .andExpect(content().string(containsString(outputExpectedMockBoard)))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-        Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
-    }
-
-    @Test
-    public void moveEmptyPitTest() throws Exception {
-        Map<Player, PlayerArea> playerMap = new HashMap<>();
-        GameInit gameInit = new GameInit(CommonMethods.DefaultValues.DEFAULT_NO_OF_PITS, CommonMethods.DefaultValues.DEFAULT_NO_OF_STONES);
-
-        Pit[] pits1 = {new Pit(CommonMethods.Numbers.ONE),
-                new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT)};
-        Pit[] pits2 = {new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.SEVEN)};
-
-        String inputMockBoard = makeInputBoard(gameInit,
-                pits1, CommonMethods.Numbers.TWO,
-                pits2, CommonMethods.Numbers.ONE,
-                1);
-
-        Pit[] outPits1 = {new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT)};
-        Pit[] outPits2 = {new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.SEVEN)};
-
-        String outputExpectedMockBoard = makeInputBoard(gameInit,
-                outPits1, CommonMethods.Numbers.TEN,
-                outPits2, CommonMethods.Numbers.ONE, 2);
-
-
-        RequestBuilder req = post(MOVE_URI, CommonMethods.Numbers.TWO)
-                .contentType(MediaType.APPLICATION_JSON) // for DTO
-                .accept(MediaType.APPLICATION_JSON) // for PathVariable
-                .content(inputMockBoard);
-
-
-        //todo: bad request test
-        MvcResult mvcResult = this.mockMvc.perform(req)
-//                .andExpect(content().string(containsString(outputExpectedMockBoard)))
-                .andExpect(status().isBadRequest())
                 .andDo(print())
                 .andReturn();
         MockHttpServletResponse response = mvcResult.getResponse();
@@ -242,7 +184,7 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.SEVEN),
                 new Pit(CommonMethods.Numbers.SEVEN)};
 
-        String inputMockBoard = makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
                 pits1, CommonMethods.Numbers.TWO,
                 pits2, CommonMethods.Numbers.ONE,
                 1);
@@ -260,7 +202,7 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.SEVEN)};
 
-        String outputExpectedMockBoard = makeInputBoard(gameInit,
+        String outputExpectedMockBoard = CommonMethods.makeInputBoard(gameInit,
                 outPits1, CommonMethods.Numbers.TEN,
                 outPits2, CommonMethods.Numbers.ONE, 2);
 
@@ -270,62 +212,6 @@ public class MoveMethodTests {
                 .accept(MediaType.APPLICATION_JSON) // for PathVariable
                 .content(inputMockBoard);
 
-        MvcResult mvcResult = this.mockMvc.perform(req)
-                .andExpect(content().string(containsString(outputExpectedMockBoard)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andReturn();
-        MockHttpServletResponse response = mvcResult.getResponse();
-        Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
-    }
-
-    @Test
-    public void moveWrongPitTest() throws Exception {
-        Map<Player, PlayerArea> playerMap = new HashMap<>();
-        GameInit gameInit = new GameInit(CommonMethods.DefaultValues.DEFAULT_NO_OF_PITS, CommonMethods.DefaultValues.DEFAULT_NO_OF_STONES);
-
-        Pit[] pits1 = {new Pit(CommonMethods.Numbers.ONE),
-                new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT)};
-        Pit[] pits2 = {new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.SEVEN)};
-
-        String inputMockBoard = makeInputBoard(gameInit,
-                pits1, CommonMethods.Numbers.TWO,
-                pits2, CommonMethods.Numbers.ONE,
-                1);
-
-        Pit[] outPits1 = {new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.EIGHT)};
-        Pit[] outPits2 = {new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.EIGHT),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.SEVEN),
-                new Pit(CommonMethods.Numbers.ZERO),
-                new Pit(CommonMethods.Numbers.SEVEN)};
-
-        String outputExpectedMockBoard = makeInputBoard(gameInit,
-                outPits1, CommonMethods.Numbers.TEN,
-                outPits2, CommonMethods.Numbers.ONE, 2);
-
-
-        RequestBuilder req = post(MOVE_URI, CommonMethods.Numbers.SEVEN)
-                .contentType(MediaType.APPLICATION_JSON) // for DTO
-                .accept(MediaType.APPLICATION_JSON) // for PathVariable
-                .content(inputMockBoard);
-
-        //todo: bad request exception
         MvcResult mvcResult = this.mockMvc.perform(req)
                 .andExpect(content().string(containsString(outputExpectedMockBoard)))
                 .andExpect(status().isOk())
@@ -353,7 +239,7 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.ONE)};
 
-        String inputMockBoard = makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
                 pits1, 37,
                 pits2, 32,
                 1);
@@ -371,7 +257,7 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.ZERO)};
 
-        Board board = makeBoard(gameInit,
+        Board board = CommonMethods.makeBoard(gameInit,
                 outPits1, 40,
                 outPits2, 32, 1);
         board.setWinner(1);
@@ -393,59 +279,5 @@ public class MoveMethodTests {
         MockHttpServletResponse response = mvcResult.getResponse();
         Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
-
-
-
-    private String makeInputBoard(GameInit gameInit,
-                                  Pit[] player1Pits,
-                                  int player1Bowl,
-                                  Pit[] player2Pits,
-                                  int player2Bowl,
-                                  int turn
-                                  ) throws JsonProcessingException {
-        Board board = new Board();
-        board.setGameInit(gameInit);
-
-        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, turn == 1);
-        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, turn == 2);
-        Map<Long, Player> playerMap = new HashMap<>();
-        playerMap.put(1L, player1);
-        playerMap.put(2L, player2);
-        board.setPlayerMap(playerMap);
-
-        Map<Long, PlayerArea> playerAreaMap = new HashMap<>();
-        playerAreaMap.put(1L, new PlayerArea(player1Pits, new Pit(player1Bowl)));
-
-        playerAreaMap.put(2L, new PlayerArea(player2Pits, new Pit(player2Bowl)));
-        board.setPlayerAreaMap(playerAreaMap);
-        return CommonMethods.mapToJson(board);
-    }
-
-    private Board makeBoard(GameInit gameInit,
-                                  Pit[] player1Pits,
-                                  int player1Bowl,
-                                  Pit[] player2Pits,
-                                  int player2Bowl,
-                                  int turn
-                                  ) throws JsonProcessingException {
-        Board board = new Board();
-        board.setGameInit(gameInit);
-
-        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, turn == 1);
-        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, turn == 2);
-        Map<Long, Player> playerMap = new HashMap<>();
-        playerMap.put(1L, player1);
-        playerMap.put(2L, player2);
-        board.setPlayerMap(playerMap);
-
-        Map<Long, PlayerArea> playerAreaMap = new HashMap<>();
-        playerAreaMap.put(1L, new PlayerArea(player1Pits, new Pit(player1Bowl)));
-
-        playerAreaMap.put(2L, new PlayerArea(player2Pits, new Pit(player2Bowl)));
-        board.setPlayerAreaMap(playerAreaMap);
-        return board;
-    }
-
-
 
 }
