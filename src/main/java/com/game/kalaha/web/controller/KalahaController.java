@@ -8,11 +8,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api/v1/kalaha")
@@ -37,12 +37,12 @@ public class KalahaController {
     }
 
     @PostMapping("/move/{pitNo}")
-    @ApiOperation(value = "Move from a pIT",
+    @ApiOperation(value = "Move from a pit, and returns updated state of the game",
             produces = "Application/JSON", response = Board.class, httpMethod = "POST")
     public Board move(
-            @ApiParam(value = "Move from a pit No", required = true)
+            @ApiParam(value = "current state of the game", required = true)
             @RequestBody Board board,
-            @ApiParam(value = "Move from a pit No", required = true)
+            @ApiParam(value = "selected pit number", required = true)
             @PathVariable int pitNo
                       ) throws BadRequestAlertException {
         log.debug("REST request to Move from a pit");
