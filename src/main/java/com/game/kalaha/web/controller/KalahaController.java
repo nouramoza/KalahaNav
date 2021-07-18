@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,17 +38,14 @@ public class KalahaController {
         return kalahaService.start(gameInit);
     }
 
-    @PostMapping("/move/{pitNo}")
+    @PostMapping("/move")
     @ApiOperation(value = "Move from a pit, and returns updated state of the game",
             produces = "Application/JSON", response = Board.class, httpMethod = "POST")
     public Board move(
             @ApiParam(value = "current state of the game", required = true)
-            @RequestBody Board board,
-            @ApiParam(value = "selected pit number", required = true)
-            @PathVariable int pitNo
-                      ) throws BadRequestAlertException {
+            @RequestBody MoveInput moveInput) throws BadRequestAlertException {
         log.debug("REST request to Move from a pit");
-        return kalahaService.move(board, pitNo);
+        return kalahaService.move(moveInput);
     }
 
     @PostMapping("/gameInitReturn/{noOfPits}/ {noOfStones}")
@@ -56,6 +55,29 @@ public class KalahaController {
         return new GameInit(noOfPits,noOfStones);
 
     }
+
+    @PostMapping("/moveInputReturn/{selectedPitNo}")
+    public MoveInput moveInputReturn(@RequestBody Board board,
+                                   @PathVariable int selectedPitNo) {
+
+        return new MoveInput(board,selectedPitNo);
+
+    }
+
+    /* vase chandta controller ye class handler darim ke mitoone toosh chand ta methode exception handler dashte bashe*/
+    //    @ControllerAdvice
+
+    /*ya yek ya chand methode exception handler dashte bashi tooye hamoon controller mizari*/
+    @ExceptionHandler(BadRequestAlertException.class)
+    public ResponseEntity<Object> handleException(BadRequestAlertException exception) {
+
+//        String bodyOfResponse = "This should be application specific";
+        ResponseEntity<Object> result = new ResponseEntity<Object>(exception.getMessage(), HttpStatus.CONFLICT);
+        return result;
+//        return handleExceptionInternal(exception, bodyOfResponse,
+//                new HttpHeaders(), HttpStatus.CONFLICT, null);
+    }
+
 
 
 }

@@ -40,29 +40,23 @@ public class CommonMethods {
         return objectMapper.writeValueAsString(obj);
     }
 
-    protected static String makeInputBoard(GameInit gameInit,
+    protected static String makeMoveInput(GameInit gameInit,
                                            Pit[] player1Pits,
                                            int player1Bowl,
                                            Pit[] player2Pits,
                                            int player2Bowl,
-                                           int turn
+                                           int turn,
+                                           int selectedPitNo
     ) throws JsonProcessingException {
-        Board board = new Board();
-        board.setGameInit(gameInit);
+        Board board = makeBoard( gameInit,
+                player1Pits,
+        player1Bowl,
+        player2Pits,
+        player2Bowl,
+        turn);
 
-        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, turn == 1);
-        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, turn == 2);
-        Map<Long, Player> playerMap = new HashMap<>();
-        playerMap.put(1L, player1);
-        playerMap.put(2L, player2);
-        board.setPlayerMap(playerMap);
 
-        Map<Long, PlayerArea> playerAreaMap = new HashMap<>();
-        playerAreaMap.put(1L, new PlayerArea(player1Pits, new Pit(player1Bowl)));
-
-        playerAreaMap.put(2L, new PlayerArea(player2Pits, new Pit(player2Bowl)));
-        board.setPlayerAreaMap(playerAreaMap);
-        return CommonMethods.mapToJson(board);
+        return CommonMethods.mapToJson(new MoveInput(board, selectedPitNo));
     }
 
     protected static Board makeBoard(GameInit gameInit,

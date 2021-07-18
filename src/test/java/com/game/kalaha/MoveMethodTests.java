@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.game.kalaha.CommonMethods.mapToJson;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class MoveMethodTests {
 
-    private static final String MOVE_URI = "/api/v1/kalaha/move/{pitNo}";
+    private static final String MOVE_URI = "/api/v1/kalaha/move";
 
     @Autowired
     MockMvc mockMvc;
@@ -74,10 +75,10 @@ public class MoveMethodTests {
                 new Pit(TestOne.PLAYER2_PIT_4),
                 new Pit(TestOne.PLAYER2_PIT_5)};
 
-        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeMoveInput(gameInit,
                 pits1, TestOne.PLAYER1_BOWL,
                 pits2, TestOne.PLAYER2_BOWL,
-                1);
+                1, TestOne.SELECTED_PIT_NO);
 
         Pit[] outPits1 = {new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.SEVEN),
@@ -92,14 +93,13 @@ public class MoveMethodTests {
                 new Pit(TestOne.PLAYER2_PIT_4),
                 new Pit(TestOne.PLAYER2_PIT_5)};
 
-        String outputExpectedMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String outputExpectedMockBoard = mapToJson(CommonMethods.makeBoard(gameInit,
                 outPits1, CommonMethods.Numbers.ONE,
-                outPits2, TestOne.PLAYER2_BOWL, 1);
+                outPits2, TestOne.PLAYER2_BOWL, 1));
 
 
-        RequestBuilder req = post(MOVE_URI, TestOne.SELECTED_PIT_NO)
+        RequestBuilder req = post(MOVE_URI)
                 .contentType(MediaType.APPLICATION_JSON) // for DTO
-                .accept(MediaType.APPLICATION_JSON) // for PathVariable
                 .content(inputMockBoard);
 
         MvcResult mvcResult = this.mockMvc.perform(req)
@@ -129,10 +129,10 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.SIX),
                 new Pit(CommonMethods.Numbers.SIX)};
 
-        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeMoveInput(gameInit,
                 pits1, CommonMethods.Numbers.ONE,
                 pits2, CommonMethods.Numbers.ZERO,
-                1);
+                1, CommonMethods.Numbers.TWO);
 
         Pit[] outPits1 = {new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.ZERO),
@@ -147,14 +147,13 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.SIX),
                 new Pit(CommonMethods.Numbers.SIX)};
 
-        String outputExpectedMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String outputExpectedMockBoard = mapToJson(CommonMethods.makeBoard(gameInit,
                 outPits1, CommonMethods.Numbers.TWO,
-                outPits2, CommonMethods.Numbers.ZERO, 2);
+                outPits2, CommonMethods.Numbers.ZERO, 2));
 
 
-        RequestBuilder req = post(MOVE_URI, CommonMethods.Numbers.TWO)
+        RequestBuilder req = post(MOVE_URI)
                 .contentType(MediaType.APPLICATION_JSON) // for DTO
-                .accept(MediaType.APPLICATION_JSON) // for PathVariable
                 .content(inputMockBoard);
 
         MvcResult mvcResult = this.mockMvc.perform(req)
@@ -184,10 +183,10 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.SEVEN),
                 new Pit(CommonMethods.Numbers.SEVEN)};
 
-        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeMoveInput(gameInit,
                 pits1, CommonMethods.Numbers.TWO,
                 pits2, CommonMethods.Numbers.ONE,
-                1);
+                1, CommonMethods.Numbers.ONE);
 
         Pit[] outPits1 = {new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.ZERO),
@@ -202,14 +201,13 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.SEVEN)};
 
-        String outputExpectedMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String outputExpectedMockBoard = mapToJson(CommonMethods.makeBoard(gameInit,
                 outPits1, CommonMethods.Numbers.TEN,
-                outPits2, CommonMethods.Numbers.ONE, 2);
+                outPits2, CommonMethods.Numbers.ONE, 2));
 
 
-        RequestBuilder req = post(MOVE_URI, CommonMethods.Numbers.ONE)
+        RequestBuilder req = post(MOVE_URI)
                 .contentType(MediaType.APPLICATION_JSON) // for DTO
-                .accept(MediaType.APPLICATION_JSON) // for PathVariable
                 .content(inputMockBoard);
 
         MvcResult mvcResult = this.mockMvc.perform(req)
@@ -239,10 +237,10 @@ public class MoveMethodTests {
                 new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.ONE)};
 
-        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeMoveInput(gameInit,
                 pits1, 37,
                 pits2, 32,
-                1);
+                1, CommonMethods.Numbers.SIX);
 
         Pit[] outPits1 = {new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.ZERO),
@@ -262,12 +260,12 @@ public class MoveMethodTests {
                 outPits2, 32, 1);
         board.setWinner(1);
 
-        String outputExpectedMockBoard = CommonMethods.mapToJson(board);
+
+        String outputExpectedMockBoard = mapToJson(board);
 
 
-        RequestBuilder req = post(MOVE_URI, CommonMethods.Numbers.SIX)
+        RequestBuilder req = post(MOVE_URI)
                 .contentType(MediaType.APPLICATION_JSON) // for DTO
-                .accept(MediaType.APPLICATION_JSON) // for PathVariable
                 .content(inputMockBoard);
 
         //todo: bad request exception

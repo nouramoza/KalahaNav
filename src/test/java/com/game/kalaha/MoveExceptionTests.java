@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.game.kalaha.CommonMethods.mapToJson;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -55,14 +56,13 @@ public class MoveExceptionTests {
                 new Pit(CommonMethods.Numbers.SEVEN),
                 new Pit(CommonMethods.Numbers.SEVEN)};
 
-        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeMoveInput(gameInit,
                 pits1, CommonMethods.Numbers.TWO,
                 pits2, CommonMethods.Numbers.ONE,
-                1);
+                1, CommonMethods.Numbers.TWO);
 
-        RequestBuilder req = post(MOVE_URI, CommonMethods.Numbers.TWO)
+        RequestBuilder req = post(MOVE_URI)
                 .contentType(MediaType.APPLICATION_JSON) // for DTO
-                .accept(MediaType.APPLICATION_JSON) // for PathVariable
                 .content(inputMockBoard);
 
         //todo: bad request test
@@ -93,10 +93,10 @@ public class MoveExceptionTests {
                 new Pit(CommonMethods.Numbers.SEVEN),
                 new Pit(CommonMethods.Numbers.SEVEN)};
 
-        String inputMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String inputMockBoard = CommonMethods.makeMoveInput(gameInit,
                 pits1, CommonMethods.Numbers.TWO,
                 pits2, CommonMethods.Numbers.ONE,
-                1);
+                1, CommonMethods.Numbers.SEVEN);
 
         Pit[] outPits1 = {new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.ZERO),
@@ -111,14 +111,13 @@ public class MoveExceptionTests {
                 new Pit(CommonMethods.Numbers.ZERO),
                 new Pit(CommonMethods.Numbers.SEVEN)};
 
-        String outputExpectedMockBoard = CommonMethods.makeInputBoard(gameInit,
+        String outputExpectedMockBoard = mapToJson(CommonMethods.makeBoard(gameInit,
                 outPits1, CommonMethods.Numbers.TEN,
-                outPits2, CommonMethods.Numbers.ONE, 2);
+                outPits2, CommonMethods.Numbers.ONE, 2));
 
 
-        RequestBuilder req = post(MOVE_URI, CommonMethods.Numbers.SEVEN)
+        RequestBuilder req = post(MOVE_URI)
                 .contentType(MediaType.APPLICATION_JSON) // for DTO
-                .accept(MediaType.APPLICATION_JSON) // for PathVariable
                 .content(inputMockBoard);
 
         //todo: bad request exception
