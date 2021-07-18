@@ -53,7 +53,7 @@ public class KalahaApplicationTests {
     public void signupTest() throws Exception {
         Map<Player, PlayerArea> playerMap = new HashMap<>();
         GameInit gameInit = new GameInit(6,6);
-        Player player1 = new Player("Player1", true);
+//        Player player1 = new Player("Player1", true);
 
 //        playerMap.put(player1, generatePlayerArea(player1, gameInit));
 //        Player player2 = new Player("Player2", false);

@@ -17,6 +17,7 @@ public class BadRequestAlertException extends Exception{
     }
 
     public BadRequestAlertException(URI type, String defaultMessage, String entityName, String errorKey) {
+        super(defaultMessage);
         getAlertParameters(entityName, errorKey);
         this.entityName = entityName;
         this.errorKey = errorKey;

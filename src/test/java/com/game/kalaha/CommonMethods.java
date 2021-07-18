@@ -54,8 +54,6 @@ public class CommonMethods {
         player2Pits,
         player2Bowl,
         turn);
-
-
         return CommonMethods.mapToJson(new MoveInput(board, selectedPitNo));
     }
 
@@ -65,22 +63,16 @@ public class CommonMethods {
                                      Pit[] player2Pits,
                                      int player2Bowl,
                                      int turn
-    ) throws JsonProcessingException {
+    ) {
         Board board = new Board();
         board.setGameInit(gameInit);
 
-        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, turn == 1);
-        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, turn == 2);
+        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, turn == 1, new PlayerArea(player1Pits, new Pit(player1Bowl)));
+        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, turn == 2, new PlayerArea(player2Pits, new Pit(player2Bowl)));
         Map<Long, Player> playerMap = new HashMap<>();
         playerMap.put(1L, player1);
         playerMap.put(2L, player2);
         board.setPlayerMap(playerMap);
-
-        Map<Long, PlayerArea> playerAreaMap = new HashMap<>();
-        playerAreaMap.put(1L, new PlayerArea(player1Pits, new Pit(player1Bowl)));
-
-        playerAreaMap.put(2L, new PlayerArea(player2Pits, new Pit(player2Bowl)));
-        board.setPlayerAreaMap(playerAreaMap);
         return board;
     }
 

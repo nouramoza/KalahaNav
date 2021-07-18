@@ -8,13 +8,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api/v1/kalaha")
@@ -33,7 +29,7 @@ public class KalahaController {
             produces = "Application/JSON", response = Board.class, httpMethod = "POST")
     public Board start(
             @ApiParam(value = "Initial Config of Board", required = true)
-            @RequestBody GameInit gameInit) {
+            @RequestBody GameInit gameInit) throws BadRequestAlertException {
         log.debug("REST request to Initialize Board");
         return kalahaService.start(gameInit);
     }
@@ -48,36 +44,23 @@ public class KalahaController {
         return kalahaService.move(moveInput);
     }
 
-    @PostMapping("/gameInitReturn/{noOfPits}/ {noOfStones}")
-    public GameInit gameInitReturn(@PathVariable int noOfPits,
-                                   @PathVariable int noOfStones) {
+    //Adding and 2 api for"/newgame"
 
-        return new GameInit(noOfPits,noOfStones);
+//    @PostMapping("/gameInitReturn/{noOfPits}/ {noOfStones}")
+//    public GameInit gameInitReturn(@PathVariable int noOfPits,
+//                                   @PathVariable int noOfStones) {
+//
+//        return new GameInit(noOfPits,noOfStones);
+//
+//    }
 
-    }
-
-    @PostMapping("/moveInputReturn/{selectedPitNo}")
-    public MoveInput moveInputReturn(@RequestBody Board board,
-                                   @PathVariable int selectedPitNo) {
-
-        return new MoveInput(board,selectedPitNo);
-
-    }
-
-    /* vase chandta controller ye class handler darim ke mitoone toosh chand ta methode exception handler dashte bashe*/
-    //    @ControllerAdvice
-
-    /*ya yek ya chand methode exception handler dashte bashi tooye hamoon controller mizari*/
-    @ExceptionHandler(BadRequestAlertException.class)
-    public ResponseEntity<Object> handleException(BadRequestAlertException exception) {
-
-//        String bodyOfResponse = "This should be application specific";
-        ResponseEntity<Object> result = new ResponseEntity<Object>(exception.getMessage(), HttpStatus.CONFLICT);
-        return result;
-//        return handleExceptionInternal(exception, bodyOfResponse,
-//                new HttpHeaders(), HttpStatus.CONFLICT, null);
-    }
-
+//    @PostMapping("/moveInputReturn/{selectedPitNo}")
+//    public MoveInput moveInputReturn(@RequestBody Board board,
+//                                   @PathVariable int selectedPitNo) {
+//
+//        return new MoveInput(board,selectedPitNo);
+//
+//    }
 
 
 }

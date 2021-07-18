@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface KalahaService {
 
-    public Board start(GameInit gameInit);
+    public Board start(GameInit gameInit) throws BadRequestAlertException;
 
     public Board move(MoveInput moveInput) throws BadRequestAlertException;
 }

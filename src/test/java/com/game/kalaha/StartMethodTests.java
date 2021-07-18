@@ -87,19 +87,13 @@ public class StartMethodTests {
         Board board = new Board();
         board.setGameInit(gameInit);
 
-        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, true);
-        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, false);
+        PlayerArea playerArea = generatePlayerArea(gameInit);
+        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, true, playerArea);
+        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, false, playerArea);
         Map<Long, Player> playerMap = new HashMap<>();
         playerMap.put(1L, player1);
         playerMap.put(2L, player2);
         board.setPlayerMap(playerMap);
-
-        PlayerArea playerArea1 = generatePlayerArea(gameInit);
-        PlayerArea playerArea2 = generatePlayerArea(gameInit);
-        Map<Long, PlayerArea> playerAreaMap = new HashMap<>();
-        playerAreaMap.put(1L, playerArea1);
-        playerAreaMap.put(2L, playerArea2);
-        board.setPlayerAreaMap(playerAreaMap);
         return CommonMethods.mapToJson(board);
 
     }
