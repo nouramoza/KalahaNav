@@ -34,10 +34,45 @@ public class CommonMethods {
         public static final int THIRTEEN = 13;
     }
 
+    protected static String makeBoard(GameInit gameInit) throws JsonProcessingException {
+        Board board = new Board();
+        board.setGameInit(gameInit);
+
+        PlayerArea playerArea = generatePlayerArea(gameInit);
+        Player player1 = new Player(DefaultValues.PLAYER_1, true, playerArea);
+        Player player2 = new Player(DefaultValues.PLAYER_2, false, playerArea);
+        Map<Long, Player> playerMap = new HashMap<>();
+        playerMap.put(1L, player1);
+        playerMap.put(2L, player2);
+        board.setPlayerMap(playerMap);
+        return mapToJson(board);
+
+    }
+
+    private static PlayerArea generatePlayerArea(GameInit gameInit) {
+        Pit[] pits = new Pit[gameInit.getPitPerPlayer()];
+        for (int i = 0; i < gameInit.getPitPerPlayer(); i++) {
+            Pit pit = new Pit(gameInit.getStonePerPit());
+            pits[i] = pit;
+        }
+        Pit bowl = new Pit(0);
+        PlayerArea playerArea = new PlayerArea(pits, bowl);
+        return playerArea;
+    }
 
     protected static String mapToJson(Object obj) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(obj);
+    }
+    protected static String makeMoveInput(GameInit gameInit,
+                                          Pit[] player1Pits,
+                                          int player1Bowl,
+                                          Pit[] player2Pits,
+                                          int player2Bowl,
+                                          int turn,
+                                          int selectedPitNo
+    ) throws JsonProcessingException {
+        return makeMoveInput(gameInit, player1Pits, player1Bowl, player2Pits, player2Bowl, turn, -1, selectedPitNo);
     }
 
     protected static String makeMoveInput(GameInit gameInit,
@@ -46,6 +81,7 @@ public class CommonMethods {
                                            Pit[] player2Pits,
                                            int player2Bowl,
                                            int turn,
+                                           int capturedPitNo,
                                            int selectedPitNo
     ) throws JsonProcessingException {
         Board board = makeBoard( gameInit,
@@ -53,8 +89,8 @@ public class CommonMethods {
         player1Bowl,
         player2Pits,
         player2Bowl,
-        turn);
-        return CommonMethods.mapToJson(new MoveInput(board, selectedPitNo));
+        turn, capturedPitNo, false);
+        return mapToJson(new MoveInput(board, selectedPitNo));
     }
 
     protected static Board makeBoard(GameInit gameInit,
@@ -62,17 +98,36 @@ public class CommonMethods {
                                      int player1Bowl,
                                      Pit[] player2Pits,
                                      int player2Bowl,
-                                     int turn
+                                     int turn,
+                                     Boolean landsInOwnBowl
+    ) {
+        return makeBoard(gameInit, player1Pits, player1Bowl, player2Pits,
+         player2Bowl,
+         turn,
+         -1,
+         landsInOwnBowl);
+    }
+
+    protected static Board makeBoard(GameInit gameInit,
+                                     Pit[] player1Pits,
+                                     int player1Bowl,
+                                     Pit[] player2Pits,
+                                     int player2Bowl,
+                                     int turn,
+                                     int capturedPitNo,
+                                     Boolean landsInOwnBowl
     ) {
         Board board = new Board();
         board.setGameInit(gameInit);
 
-        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, turn == 1, new PlayerArea(player1Pits, new Pit(player1Bowl)));
-        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, turn == 2, new PlayerArea(player2Pits, new Pit(player2Bowl)));
+        Player player1 = new Player(DefaultValues.PLAYER_1, turn == 1, new PlayerArea(player1Pits, new Pit(player1Bowl)));
+        Player player2 = new Player(DefaultValues.PLAYER_2, turn == 2, new PlayerArea(player2Pits, new Pit(player2Bowl)));
         Map<Long, Player> playerMap = new HashMap<>();
         playerMap.put(1L, player1);
         playerMap.put(2L, player2);
         board.setPlayerMap(playerMap);
+        board.setLandsInOwnBowl(landsInOwnBowl);
+        board.setCapturedPitNo(capturedPitNo);
         return board;
     }
 

@@ -11,14 +11,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestAlertException.class)
     public ResponseEntity<Object> handleBadRequestException(BadRequestAlertException exception) {
 
-//        String bodyOfResponse = "This should be application specific";
-        ResponseEntity<Object> result = new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
-        return result;
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleOtherExceptions(Exception exception) {
-        ResponseEntity<Object> result = new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
-        return result;
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
     }
 }

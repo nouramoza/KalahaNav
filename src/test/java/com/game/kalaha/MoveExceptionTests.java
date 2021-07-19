@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.game.kalaha.web.error.ErrorConstants.MoveExceptionMessages.EMPTY_PIT_SELECTED_MSG;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -64,7 +65,7 @@ public class MoveExceptionTests {
                 .content(inputMockBoard);
 
         MvcResult mvcResult = this.mockMvc.perform(req)
-                .andExpect(content().string(containsString("The Selected Pit Is Empty")))
+                .andExpect(content().string(containsString(EMPTY_PIT_SELECTED_MSG)))
                 .andExpect(status().isConflict())
                 .andDo(print())
                 .andReturn();

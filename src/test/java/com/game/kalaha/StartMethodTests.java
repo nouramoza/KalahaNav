@@ -49,7 +49,7 @@ public class StartMethodTests {
         GameInit gameInit = new GameInit(TestOne.NO_OF_PITS, TestOne.NO_OF_STONES_PER_PIT);
         String inputMockGameInit = CommonMethods.mapToJson(gameInit);
 
-        String outputExpectedMockBoard = makeBoard(gameInit);
+        String outputExpectedMockBoard = CommonMethods.makeBoard(gameInit);
         RequestBuilder req = post(START_URI).contentType(MediaType.APPLICATION_JSON)
                 .content(inputMockGameInit);
 
@@ -66,7 +66,7 @@ public class StartMethodTests {
         GameInit gameInit = new GameInit(TestTwo.NO_OF_PITS, TestTwo.NO_OF_STONES_PER_PIT);
         String inputMockGameInit = CommonMethods.mapToJson(gameInit);
 
-        String outputExpectedMockBoard = makeBoard(gameInit);
+        String outputExpectedMockBoard = CommonMethods.makeBoard(gameInit);
         RequestBuilder req = post(START_URI).contentType(MediaType.APPLICATION_JSON)
                 .content(inputMockGameInit);
 
@@ -78,30 +78,23 @@ public class StartMethodTests {
         Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
+        @Test
+        public void startTest3() throws Exception {
+            GameInit gameInit = new GameInit(CommonMethods.Numbers.TEN, CommonMethods.Numbers.SEVEN);
+            String inputMockGameInit = CommonMethods.mapToJson(gameInit);
 
-    private String makeBoard(GameInit gameInit) throws JsonProcessingException {
-        Board board = new Board();
-        board.setGameInit(gameInit);
+            String outputExpectedMockBoard = CommonMethods.makeBoard(gameInit);
+            RequestBuilder req = post(START_URI).contentType(MediaType.APPLICATION_JSON)
+                    .content(inputMockGameInit);
 
-        PlayerArea playerArea = generatePlayerArea(gameInit);
-        Player player1 = new Player(CommonMethods.DefaultValues.PLAYER_1, true, playerArea);
-        Player player2 = new Player(CommonMethods.DefaultValues.PLAYER_2, false, playerArea);
-        Map<Long, Player> playerMap = new HashMap<>();
-        playerMap.put(1L, player1);
-        playerMap.put(2L, player2);
-        board.setPlayerMap(playerMap);
-        return CommonMethods.mapToJson(board);
 
-    }
-
-    private PlayerArea generatePlayerArea(GameInit gameInit) {
-        Pit[] pits = new Pit[gameInit.getPitPerPlayer()];
-        for (int i = 0; i < gameInit.getPitPerPlayer(); i++) {
-            Pit pit = new Pit(gameInit.getStonePerPit());
-            pits[i] = pit;
+            MvcResult mvcResult = mockMvc.perform(req)
+                    .andExpect(content().string(containsString(outputExpectedMockBoard)))
+                    .andReturn();
+            MockHttpServletResponse response = mvcResult.getResponse();
+            Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
         }
-        Pit bowl = new Pit(0);
-        PlayerArea playerArea = new PlayerArea(pits, bowl);
-        return playerArea;
-    }
+
+
+
 }

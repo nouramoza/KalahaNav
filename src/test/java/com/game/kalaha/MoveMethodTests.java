@@ -58,7 +58,7 @@ public class MoveMethodTests {
     }
 
     @Test
-    public void moveTest1() throws Exception {
+    public void moveLandsInOwnBowlTest() throws Exception {
         Map<Player, PlayerArea> playerMap = new HashMap<>();
         GameInit gameInit = new GameInit(CommonMethods.DefaultValues.DEFAULT_NO_OF_PITS, CommonMethods.DefaultValues.DEFAULT_NO_OF_STONES);
 
@@ -95,7 +95,7 @@ public class MoveMethodTests {
 
         String outputExpectedMockBoard = mapToJson(CommonMethods.makeBoard(gameInit,
                 outPits1, CommonMethods.Numbers.ONE,
-                outPits2, TestOne.PLAYER2_BOWL, 1));
+                outPits2, TestOne.PLAYER2_BOWL, 1, true));
 
 
         RequestBuilder req = post(MOVE_URI)
@@ -107,13 +107,10 @@ public class MoveMethodTests {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andReturn();
-//        MockHttpServletResponse response = mvcResult.getResponse();
-//        Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
     @Test
     public void moveTest2() throws Exception {
-        Map<Player, PlayerArea> playerMap = new HashMap<>();
         GameInit gameInit = new GameInit(CommonMethods.DefaultValues.DEFAULT_NO_OF_PITS, CommonMethods.DefaultValues.DEFAULT_NO_OF_STONES);
 
         Pit[] pits1 = {new Pit(CommonMethods.Numbers.ZERO),
@@ -149,7 +146,7 @@ public class MoveMethodTests {
 
         String outputExpectedMockBoard = mapToJson(CommonMethods.makeBoard(gameInit,
                 outPits1, CommonMethods.Numbers.TWO,
-                outPits2, CommonMethods.Numbers.ZERO, 2));
+                outPits2, CommonMethods.Numbers.ZERO, 2, false));
 
 
         RequestBuilder req = post(MOVE_URI)
@@ -203,7 +200,7 @@ public class MoveMethodTests {
 
         String outputExpectedMockBoard = mapToJson(CommonMethods.makeBoard(gameInit,
                 outPits1, CommonMethods.Numbers.TEN,
-                outPits2, CommonMethods.Numbers.ONE, 2));
+                outPits2, CommonMethods.Numbers.ONE, 2, 1, false));
 
 
         RequestBuilder req = post(MOVE_URI)
@@ -257,7 +254,7 @@ public class MoveMethodTests {
 
         Board board = CommonMethods.makeBoard(gameInit,
                 outPits1, 40,
-                outPits2, 32, 1);
+                outPits2, 32, 1, true);
         board.setWinner(1);
 
 
@@ -268,7 +265,6 @@ public class MoveMethodTests {
                 .contentType(MediaType.APPLICATION_JSON) // for DTO
                 .content(inputMockBoard);
 
-        //todo: bad request exception
         MvcResult mvcResult = this.mockMvc.perform(req)
                 .andExpect(content().string(containsString(outputExpectedMockBoard)))
                 .andExpect(status().isOk())
