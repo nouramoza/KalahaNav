@@ -15,8 +15,6 @@ public class Board {
     private GameInit gameInit;
     @NonNull
     private Map<Long, Player> playerMap;
-//    @NonNull
-//    private Map<Long, PlayerArea> playerAreaMap;
     private int capturedPitNo = ConstantsUtil.DefaultValues.NOT_CAPTURED_PIT;
     private Boolean landsInOwnBowl = false;
     private int winner;

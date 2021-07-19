@@ -48,10 +48,8 @@ public class StartMethodTests {
     public void startTest1() throws Exception {
         GameInit gameInit = new GameInit(TestOne.NO_OF_PITS, TestOne.NO_OF_STONES_PER_PIT);
         String inputMockGameInit = CommonMethods.mapToJson(gameInit);
-        System.out.println("inputMockGameInit==> " + inputMockGameInit);
 
         String outputExpectedMockBoard = makeBoard(gameInit);
-        System.out.println("outputExpectedMockBoard==> " + outputExpectedMockBoard);
         RequestBuilder req = post(START_URI).contentType(MediaType.APPLICATION_JSON)
                 .content(inputMockGameInit);
 
@@ -67,10 +65,8 @@ public class StartMethodTests {
     public void startTest2() throws Exception {
         GameInit gameInit = new GameInit(TestTwo.NO_OF_PITS, TestTwo.NO_OF_STONES_PER_PIT);
         String inputMockGameInit = CommonMethods.mapToJson(gameInit);
-        System.out.println("inputMockGameInit==> " + inputMockGameInit);
 
         String outputExpectedMockBoard = makeBoard(gameInit);
-        System.out.println("outputExpectedMockBoard==> " + outputExpectedMockBoard);
         RequestBuilder req = post(START_URI).contentType(MediaType.APPLICATION_JSON)
                 .content(inputMockGameInit);
 
@@ -101,7 +97,7 @@ public class StartMethodTests {
     private PlayerArea generatePlayerArea(GameInit gameInit) {
         Pit[] pits = new Pit[gameInit.getPitPerPlayer()];
         for (int i = 0; i < gameInit.getPitPerPlayer(); i++) {
-            Pit pit = new Pit(gameInit.getPitPerPlayer());
+            Pit pit = new Pit(gameInit.getStonePerPit());
             pits[i] = pit;
         }
         Pit bowl = new Pit(0);

@@ -16,6 +16,6 @@ public class GameInit {
     private int pitPerPlayer;
     @NonNull
     private int stonePerPit;
-    private ArrayList<String> playerNameList;
+    private String[] playerNameList;
     private Long starterPlayerNo = 1L;
 }
