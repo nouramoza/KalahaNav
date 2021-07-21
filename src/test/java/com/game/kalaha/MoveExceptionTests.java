@@ -4,6 +4,7 @@ import com.game.kalaha.web.dto.GameInit;
 import com.game.kalaha.web.dto.Pit;
 import com.game.kalaha.web.dto.Player;
 import com.game.kalaha.web.dto.PlayerArea;
+import com.game.kalaha.web.error.ErrorConstants;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,7 +102,7 @@ public class MoveExceptionTests {
                 .content(inputMockBoard);
 
         MvcResult mvcResult = this.mockMvc.perform(req)
-                .andExpect(content().string(containsString("Wrong Area Is Selected")))
+                .andExpect(content().string(containsString(ErrorConstants.MoveExceptionMessages.WRONG_AREA_SELECTED_MSG)))
                 .andExpect(status().isConflict())
                 .andDo(print())
                 .andReturn();

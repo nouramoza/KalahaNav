@@ -46,21 +46,31 @@ public class KalahaController {
 
     //Adding and 2 api for"/newgame"
 
-//    @PostMapping("/gameInitReturn/{noOfPits}/ {noOfStones}")
-//    public GameInit gameInitReturn(@PathVariable int noOfPits,
-//                                   @PathVariable int noOfStones) {
-//
-//        return new GameInit(noOfPits,noOfStones);
-//
-//    }
+    @PostMapping("/gameInitReturn/{noOfPits}/{noOfStones}/{player1}/{player2}")
+    public GameInit gameInitReturn(@PathVariable String player1,
+                                   @PathVariable String player2,
+                                   @PathVariable int noOfPits,
+                                   @PathVariable int noOfStones) {
+        String[] names = {player1, player2};
+        return new GameInit(2, noOfPits, noOfStones, names, 1);
 
-//    @PostMapping("/moveInputReturn/{selectedPitNo}")
-//    public MoveInput moveInputReturn(@RequestBody Board board,
-//                                   @PathVariable int selectedPitNo) {
-//
-//        return new MoveInput(board,selectedPitNo);
-//
-//    }
+    }
+
+    @PostMapping("/gameInitReturn/{noOfPits}/{noOfStones}")
+    public GameInit gameInitReturn(
+                                   @PathVariable int noOfPits,
+                                   @PathVariable int noOfStones) {
+        return new GameInit(noOfPits, noOfStones);
+
+    }
+
+    @PostMapping("/moveInputReturn/{selectedPitNo}")
+    public MoveInput moveInputReturn(@RequestBody Board board,
+                                   @PathVariable int selectedPitNo) {
+
+        return new MoveInput(board,selectedPitNo);
+
+    }
 
 
 }

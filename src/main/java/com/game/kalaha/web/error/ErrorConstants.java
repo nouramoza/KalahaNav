@@ -16,7 +16,7 @@ public final class ErrorConstants {
 
     public static class StartExceptionMessages {
         public static final String WRONG_NO_OF_PLAYERS_KEY = "wrongNoOfPlayers";
-        public static final String WRONG_NO_OF_PLAYERS_MSG = "Currently More Than two Players is Not available.";
+        public static final String WRONG_NO_OF_PLAYERS_MSG = "Currently More/Less Than two Players is Not available.";
         public static final String WRONG_NO_OF_PITS_KEY = "wrongNoOfPit";
         public static final String WRONG_NO_OF_PITS_MSG = "Pits Number Is Not Valid";
         public static final String WRONG_NO_OF_STONES_KEY = "wrongNoOfStones";
@@ -29,6 +29,8 @@ public final class ErrorConstants {
         public static final String WRONG_AREA_SELECTED_KEY = "wrongAreaSelected";
         public static final String WRONG_AREA_SELECTED_MSG = "Wrong Area Is Selected";
         public static final String EMPTY_PIT_SELECTED_KEY = "emptyPitSelected";
-        public static final String EMPTY_PIT_SELECTED_MSG = "Wrong Area Is Selected";
+        public static final String EMPTY_PIT_SELECTED_MSG = "Empty Pit Is Selected";
+        public static final String WRONG_INPUT_KEY = "wrongInput";
+        public static final String WRONG_INPUT_MSG = "The Input Is Not Valid";
     }
 }

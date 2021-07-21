@@ -274,4 +274,63 @@ public class MoveMethodTests {
         Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
+    @Test
+    public void moveGameOverWithCaptureTest() throws Exception {
+        Map<Player, PlayerArea> playerMap = new HashMap<>();
+        GameInit gameInit = new GameInit(CommonMethods.DefaultValues.DEFAULT_NO_OF_PITS, CommonMethods.DefaultValues.DEFAULT_NO_OF_STONES);
+
+        Pit[] pits1 = {new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.THREE),
+                new Pit(CommonMethods.Numbers.THREE),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO)};
+        Pit[] pits2 = {new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ONE),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO)};
+
+        String inputMockBoard = CommonMethods.makeMoveInput(gameInit,
+                pits1, 32,
+                pits2, 33,
+                1, CommonMethods.Numbers.TWO);
+
+        Pit[] outPits1 = {new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO)};
+        Pit[] outPits2 = {new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO),
+                new Pit(CommonMethods.Numbers.ZERO)};
+
+        Board board = CommonMethods.makeBoard(gameInit,
+                outPits1, 34,
+                outPits2, 38, 2, false);
+        board.setWinner(2);
+        board.setCapturedPitNo(4);
+
+
+        String outputExpectedMockBoard = mapToJson(board);
+
+
+        RequestBuilder req = post(MOVE_URI)
+                .contentType(MediaType.APPLICATION_JSON) // for DTO
+                .content(inputMockBoard);
+
+        MvcResult mvcResult = this.mockMvc.perform(req)
+                .andExpect(content().string(containsString(outputExpectedMockBoard)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        Assert.assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
 }

@@ -50,7 +50,7 @@ public class KalahaApplicationTests {
 //    }
 
     @Test
-    public void signupTest() throws Exception {
+    public void gameTest() throws Exception {
         Map<Player, PlayerArea> playerMap = new HashMap<>();
         GameInit gameInit = new GameInit(6,6);
 //        Player player1 = new Player("Player1", true);

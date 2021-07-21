@@ -4,7 +4,6 @@ import com.game.kalaha.service.KalahaService;
 import com.game.kalaha.util.ConstantsUtil;
 import com.game.kalaha.web.dto.*;
 import com.game.kalaha.web.error.BadRequestAlertException;
-import com.game.kalaha.web.error.ErrorConstants;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,7 +35,8 @@ public class KalahaServiceImpl implements KalahaService {
     }
 
     private void checkInputValidation(GameInit gameInit) throws BadRequestAlertException {
-        if (gameInit.getNoOfPlayers() > 2 || gameInit.getNoOfPlayers() < 2) {
+        if (gameInit.getNoOfPlayers() > ConstantsUtil.DefaultValues.DEFAULT_NO_OF_PLAYERS ||
+                gameInit.getNoOfPlayers() < ConstantsUtil.DefaultValues.DEFAULT_NO_OF_PLAYERS) {
             throw new BadRequestAlertException(WRONG_NO_OF_PLAYERS_MSG, PLAYER_AREA_MODEL, WRONG_NO_OF_PLAYERS_KEY);
         }
         if (gameInit.getPitPerPlayer() <  1) {
@@ -75,7 +75,7 @@ public class KalahaServiceImpl implements KalahaService {
                 gameInit.getPlayerNameList() != null ?
                         gameInit.getPlayerNameList()[Math.toIntExact(index -1)] :
                         ConstantsUtil.DefaultValues.DEFAULT_PLAYER_NAME.concat(String.valueOf(index)),
-                gameInit.getStarterPlayerNo().equals(index), playerArea);
+                gameInit.getStarterPlayerNo() == index.intValue(), playerArea);
     }
 
     private PlayerArea generatePlayerArea(GameInit gameInit) {
@@ -100,13 +100,12 @@ public class KalahaServiceImpl implements KalahaService {
         int selectedPitNo = moveInput.getSelectedPitNo();
 
         int roundTurn = findTurn(board);
-        checkOwnPitIsSelected(board, selectedPitNo);
-        checkPitIsEmpty(board, selectedPitNo, roundTurn);
+        checkInputValidity(board, selectedPitNo, roundTurn);
+        setInitialValues(board);
         doMove(board, selectedPitNo, roundTurn);
         doCapture(board, roundTurn);
-        if (checkAllPitsEmpty(board, roundTurn)) {
-            doFinalizeGame(board, roundTurn);
-        }
+        checkAndDoFinalizeGame(board, roundTurn);
+        checkAndDoFinalizeGame(board, findOtherPlayerTurn(roundTurn, board.getGameInit().getNoOfPlayers()));
         updateTurn(board, roundTurn);
         return board;
     }
@@ -123,17 +122,19 @@ public class KalahaServiceImpl implements KalahaService {
 
     }
 
-    private void checkOwnPitIsSelected(Board board, int selectedPitNo) throws BadRequestAlertException {
+    private void checkInputValidity(Board board, int selectedPitNo, int roundTurn) throws BadRequestAlertException {
         int noOfPitsPerPit = board.getGameInit().getPitPerPlayer();
         if (!(selectedPitNo > ((noOfPitsPerPit) - noOfPitsPerPit) && selectedPitNo <= (noOfPitsPerPit))) {
             throw new BadRequestAlertException(WRONG_AREA_SELECTED_MSG, PLAYER_AREA_MODEL, WRONG_AREA_SELECTED_KEY);
         }
-    }
-
-    private void checkPitIsEmpty(Board board, int selectedPitNo, int turn) throws BadRequestAlertException {
-        if (board.getPlayerMap().get(Long.valueOf(turn)).getPlayerArea().getPits()[selectedPitNo - 1].getNumOfStones() == 0) {
+        if (board.getPlayerMap().get(Long.valueOf(roundTurn)).getPlayerArea().getPits()[selectedPitNo - 1].getNumOfStones() == 0) {
             throw new BadRequestAlertException(EMPTY_PIT_SELECTED_MSG, PIT_MODEL, EMPTY_PIT_SELECTED_KEY);
         }
+    }
+
+    private void setInitialValues(Board board) {
+        board.setLandsInOwnBowl(false);
+        board.setCapturedPitNo(ConstantsUtil.DefaultValues.NO_PIT_CAPTURED);
     }
 
     private void doMove(Board board, int selectedPitNo, int roundTurn) {
@@ -235,20 +236,21 @@ public class KalahaServiceImpl implements KalahaService {
         return gameOver;
     }
 
-    private String doFinalizeGame(Board board, int roundTurn) {
-        int totalRemainedStones = 0;
-        int otherPlayerTurn = findOtherPlayerTurn(roundTurn, board.getGameInit().getNoOfPlayers());
+    private void checkAndDoFinalizeGame(Board board, int roundTurn) {
+        if (board.getWinner() == 0 && checkAllPitsEmpty(board, roundTurn)) {
+            int totalRemainedStones = 0;
+            int otherPlayerTurn = findOtherPlayerTurn(roundTurn, board.getGameInit().getNoOfPlayers());
 
-        for (int i = 0; i < board.getGameInit().getPitPerPlayer(); i++) {
-            totalRemainedStones += board.getPlayerMap().get(Long.valueOf(otherPlayerTurn)).getPlayerArea().getPits()[i].getNumOfStones();
-            board.getPlayerMap().get(Long.valueOf(otherPlayerTurn)).getPlayerArea().getPits()[i].setNumOfStones(0);
+            for (int i = 0; i < board.getGameInit().getPitPerPlayer(); i++) {
+                totalRemainedStones += board.getPlayerMap().get(Long.valueOf(otherPlayerTurn)).getPlayerArea().getPits()[i].getNumOfStones();
+                board.getPlayerMap().get(Long.valueOf(otherPlayerTurn)).getPlayerArea().getPits()[i].setNumOfStones(0);
+            }
+
+            board.getPlayerMap().get(Long.valueOf(roundTurn)).getPlayerArea().getBowl().setNumOfStones(
+                    board.getPlayerMap().get(Long.valueOf(roundTurn)).getPlayerArea().getBowl().getNumOfStones() + totalRemainedStones
+            );
+            board.setWinner(roundTurn);
         }
-
-        board.getPlayerMap().get(Long.valueOf(roundTurn)).getPlayerArea().getBowl().setNumOfStones(
-                board.getPlayerMap().get(Long.valueOf(roundTurn)).getPlayerArea().getBowl().getNumOfStones() + totalRemainedStones
-        );
-        board.setWinner(roundTurn);
-        return "Game Over: Player" + roundTurn + "Wins";
     }
 
     private int findOtherPlayerTurn(int turn, int noOfPlayers) {

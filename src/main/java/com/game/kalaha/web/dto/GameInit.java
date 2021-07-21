@@ -17,5 +17,5 @@ public class GameInit {
     @NonNull
     private int stonePerPit;
     private String[] playerNameList;
-    private Long starterPlayerNo = 1L;
+    private int starterPlayerNo = 1;
 }
